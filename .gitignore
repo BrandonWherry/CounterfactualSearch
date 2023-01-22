@@ -155,8 +155,6 @@ cython_debug/
 #.idea/
 
 # img files & BASS output & annotations
-labelme/**/test_images
-labelme/**/BASS_output
-labelme/**/label_annotations
+labelme
 BASS
 scikit_image
