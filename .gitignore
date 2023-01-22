@@ -159,3 +159,4 @@ labelme/**/test_images
 labelme/**/BASS_output
 labelme/**/label_annotations
 BASS
+scikit_image
