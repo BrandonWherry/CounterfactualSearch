@@ -1,9 +1,7 @@
 import torch
-from trainer import *
+from src.cse.trainer import *
 import torchvision.transforms as transforms
-import torchvision
-from re_alogirthms_fashion import *
-from bass_functions import *
+from src.cse.re_alogirthms import *
 from PIL import Image
 
 import warnings
@@ -39,7 +37,6 @@ SEG_MAP = {
 }
 
 
-
 def main(attr_map: int = 0, 
          seg_map: int = 0,
          output_class: int = 0,
@@ -53,7 +50,7 @@ def main(attr_map: int = 0,
     # batch size of 16 appears to be optimal for search speed
     # can do 20 regions in ~3 minutes!
     batch_sz = 16
-    model_dict = torch.load('/workspace/adv_robustness/region_explainability/mnist_training/resnet_models/grad_cam_model_fashion.pt')
+    model_dict = torch.load('/workspace/adv_robustness/region_explainability/mnist_training/resnet_models/grad_cam_model.pt')
     model = gradcam_model()
     model.load_state_dict(model_dict)
 
@@ -63,17 +60,17 @@ def main(attr_map: int = 0,
     model.eval()
     # torch.jit.trace speeds up evaluation
     
-    good_img_transform = transforms.Normalize((0.5,), (0.5,))
+    good_img_transform = transforms.Normalize((0.1307,), (0.3081,))
     # This is to reverse the normalization done to the images that centered them around imagenet mean and std
     # The invTrans should be used on images before saving them.
-    invTrans = transforms.Normalize((1/0.5,), (1/0.5,))
+    invTrans = transforms.Normalize((1/0.1307,), (1/0.3081,))
     
     images = Image.open(img_dir)
     img_dir, img_name = (img_dir.split('/')[:-2], img_dir.split('/')[-1])
     
     transform = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Normalize((0.5,), (0.5,))
+        transforms.Normalize((0.1307,), (0.3081,))
     ])
 
     inv_img = transform(images).unsqueeze(0)
@@ -107,9 +104,6 @@ def main(attr_map: int = 0,
     if seg_map == 0:
         segments = slic(img_np, n_segments=25, compactness=1, start_label=1)
     
-    if seg_map == 1:
-        segments = csv_mask_to_numpy('labelme/MNIST_sneaker_sandal/BASS_output/' + img_name[:-3] +'csv')
-    
     if seg_map == 2:
         segments = felzenszwalb(img_np, scale=5, sigma=0.5, min_size=5)
     
@@ -130,7 +124,7 @@ def main(attr_map: int = 0,
                                             MAX_BATCH_SZ = batch_sz,
                                             PRUNE_HEURISTIC = pruning_heuristic)
     
-    torch.save(working_example, 'labelme/MNIST_sneaker_sandal/metric_results_bass_ablation/' + img_name)
+    torch.save(working_example, 'labelme/MNIST_71/metric_results/' + img_name)
     if working_example == -1:
         return -1
     
@@ -158,7 +152,7 @@ def main(attr_map: int = 0,
         plt.margins(x=0)
     
     img_dir = os.path.join('/', *img_dir)
-    img_dir = os.path.join(img_dir, 'results_bass_ablation', img_name)
+    img_dir = os.path.join(img_dir, 'results', img_name)
     print('Image name:', img_name)
     figure_name.savefig(img_dir)
     plt.close()
@@ -179,7 +173,7 @@ if __name__ == "__main__":
                         help='Target class')
                         
     parser.add_argument('--img_dir', default='/workspace/adv_robustness' + 
-                        '/region_explainability/' + 'labelme/MNIST_sneaker_sandal/test_images',
+                        '/region_explainability/' + 'labelme/MNIST_71/test_images',
                         type=str, help='dir of images to be tested')
                         
     args = parser.parse_args()
