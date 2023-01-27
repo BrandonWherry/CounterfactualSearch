@@ -1,2 +1,2 @@
 # Add model name here if it exceeds ~30MB
-*.pt
+# *.pt # < - uncomment to hide all models
