@@ -1,1 +1,1 @@
-All driver code should go here. Create a new folder to logically separate the purpose of your code with the other categories, if needed.
+All driver code should go here. Create a new folder to logically separate the purpose of your code with the other categories (if needed).
