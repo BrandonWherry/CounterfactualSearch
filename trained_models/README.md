@@ -1,1 +1,1 @@
-All trained models go in this directory
+All trained models go in this directory, create a new directory for each type of model.
