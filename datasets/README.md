@@ -1,3 +1,7 @@
+This directory stores all datasets that will be used. Make a new directory for each, and add that directory to .gitignore if it exceeds ~30MB
+
+
+
 # CounterfactualMNIST
 Following [Kenny and Keane, 2021], we sampled a part of
 the MNIST dataset by selecting classes of images where the
