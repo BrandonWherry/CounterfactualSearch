@@ -1,7 +1,8 @@
+from email import utils
 import torch
-from src.cse.trainer import *
+from cse_utils import trainer
 import torchvision.transforms as transforms
-from src.cse.re_alogirthms import *
+from re_algorithms import *
 from PIL import Image
 
 import warnings
