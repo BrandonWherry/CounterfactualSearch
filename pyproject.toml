@@ -5,12 +5,17 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "cse"
 version = "1.0.0"
+authors = [
+  { name="Mazal Bethany", email="mazal.bethany@utsa.edu" },
+  { name="Brandon Wherry", email="brandon.wherry@utsa.edu" },
+]
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.8, <=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
+description = "A Python package for the implementation of the CSE algorithm"
 dependencies = [
     "captum==0.5.0",
     "dask_image==2021.12.0",

@@ -2,8 +2,8 @@ from email import utils
 import torch
 from cse_utils import trainer
 import torchvision.transforms as transforms
-from re_algorithms import *
 from PIL import Image
+from cse.cse_algorithms import *
 
 import warnings
 warnings.filterwarnings("ignore")
