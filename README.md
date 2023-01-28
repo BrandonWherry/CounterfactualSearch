@@ -1,9 +1,6 @@
 ## __CSE__
-Causal Subobject Explanations
+A repo for the Causal Subobject Explanations algorithm.
 
-For IJCAI 2023 submission
-
-# test
 
 ## __Abstract__
 
@@ -34,3 +31,9 @@ we demonstrate the practicality of CSEs for three
 datasets of harmful images, to automatically
 obfuscate the harmful regions in these images,
 thereby rendering them safe.
+
+
+# For bass segmentation
+
+Requires a build from https://github.com/BGU-CS-VIL/BASS.
+This build is already provided if you clone this repo (bass_build).
