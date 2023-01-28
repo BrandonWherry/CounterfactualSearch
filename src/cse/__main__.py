@@ -21,7 +21,6 @@ LABELS_MAP_FASHION = {
     9: '9'
 }
 
-
 ATTR_MAP = {
     'grad_cam': 0,
     'grad_cam++': 1,
