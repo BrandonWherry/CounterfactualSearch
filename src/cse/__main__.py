@@ -168,6 +168,10 @@ def main(attr_map: str,
     pass
 
 
+def test():
+    pass
+
+
 if __name__ == "__main__":
     import argparse
     import glob
@@ -188,9 +192,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    main_old(attr_map=args.attr_map,
-             seg_map=args.seg_map,
-             output_class=args.class_index,
-             img_dir=args.image_dir)
+    # main_old(attr_map=args.attr_map,
+    #          seg_map=args.seg_map,
+    #          output_class=args.class_index,
+    #          img_dir=args.image_dir)
+
+    
 
     print('Completed.')
