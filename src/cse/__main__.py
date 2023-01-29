@@ -1,12 +1,12 @@
-from email import utils
 import torch
-from cse_utils import trainer
+from ml_utils.models import gradcam_model
 import torchvision.transforms as transforms
 from PIL import Image
 from cse.cse_algorithms import *
 
 import warnings
 warnings.filterwarnings("ignore")
+
 
 LABELS_MAP_FASHION = {
     0: '0',
@@ -21,6 +21,7 @@ LABELS_MAP_FASHION = {
     9: '9'
 }
 
+
 ATTR_MAP = {
     'grad_cam': 0,
     'grad_cam++': 1,
@@ -28,6 +29,7 @@ ATTR_MAP = {
     'x_grad_cam': 3,
     'ablation_cam': 4
 }
+
 
 SEG_MAP = {
     'slic': 0,
@@ -37,10 +39,10 @@ SEG_MAP = {
 }
 
 
-def main(attr_map: int = 0,
-         seg_map: int = 0,
-         output_class: int = 0,
-         img_dir: str = 'data/train'):
+def main_old(attr_map: int = 0,
+             seg_map: int = 0,
+             output_class: int = 0,
+             img_dir: str = 'data/train'):
 
     class_target = output_class
     top_n_start = 1
@@ -61,10 +63,10 @@ def main(attr_map: int = 0,
     model.eval()
     # torch.jit.trace speeds up evaluation
 
-    good_img_transform = transforms.Normalize((0.1307,), (0.3081,))
+    # good_img_transform = transforms.Normalize((0.1307,), (0.3081,))
     # This is to reverse the normalization done to the images that centered them around imagenet mean and std
     # The invTrans should be used on images before saving them.
-    invTrans = transforms.Normalize((1/0.1307,), (1/0.3081,))
+    # invTrans = transforms.Normalize((1/0.1307,), (1/0.3081,))
 
     images = Image.open(img_dir)
     img_dir, img_name = (img_dir.split('/')[:-2], img_dir.split('/')[-1])
@@ -124,34 +126,39 @@ def main(attr_map: int = 0,
     if working_example == -1:
         return -1
 
-    ori_prediction = working_example[4][0]
-    ori_confidence = working_example[3][0]
-    cf_prediction = working_example[4][1]
-    cf_confidence = working_example[3][1]
 
-    print("regions analyzed", working_example[-3])
-    print("Original Version Predicted Class:", ori_prediction,
-          "     With Confidence:", ori_confidence)
-    print("Modified Version Predicted Class:", cf_prediction,
-          "     With Confidence:", cf_confidence)
+def main(attr_map: int = 0,
+         seg_map: int = 0,
+         starting_class: int = 0,
+         img_dir: str = 'data/train'):
+    """
+    Psuedo code for main func:
 
-    plot_images = (input_tensor.detach().cpu().squeeze(),
-                   grayscale_cam,
-                   segmentation.mark_boundaries(img_np, segments),
-                   working_example[0].detach().cpu().squeeze())
 
-    figure_name = plt.figure(figsize=(14, 14))
-    for i, img in enumerate(plot_images):
-        plt.subplot(1, 4, i+1)
-        plt.axis('off')
-        plt.imshow(img, cmap='gray')
-        plt.margins(x=0)
+    build model & jit model
+    get images folder
 
-    img_dir = os.path.join('/', *img_dir)
-    img_dir = os.path.join(img_dir, 'results', img_name)
-    print('Image name:', img_name)
-    figure_name.savefig(img_dir)
-    plt.close()
+    for image in images:
+        output = jit_model(image)
+
+        if output_class != starting_class:
+            print(f'Warning, {image} is not predicted to be class {LABELS_MAP[starting_class]}')
+            print('Skipping over image.')
+            continue
+
+        seg_map = get_slic_seg(image)
+        attr_map = get_fullgrad_map(model, class_index, image)
+        avg_score_attr_map = get_avg_score_attr_map(seg_map, attr_map)
+        ranked_attr = get_attribution_rank(avg_score_attr_map)
+        features = get_feature_masks(image=image, attributions=ranked_attr,
+                                   segments_slic=seg_map)
+        counterfactual_search_result = cse(image, jit_model, features, start_depth, end_depth)
+
+        ...
+
+    """
+
+    pass
 
 
 if __name__ == "__main__":
@@ -183,10 +190,10 @@ if __name__ == "__main__":
     for img in img_list:
         print('#'*100)
         print()
-        main(attr_map=ATTR_MAP[args.attr_map],
-             seg_map=SEG_MAP[args.seg_map],
-             output_class=args.output_class,
-             img_dir=img)
+        main_old(attr_map=ATTR_MAP[args.attr_map],
+                 seg_map=SEG_MAP[args.seg_map],
+                 output_class=args.output_class,
+                 img_dir=img)
         print()
         print('#'*100)
 

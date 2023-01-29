@@ -34,26 +34,12 @@ import numpy as np
 
 
 import numpy as np
-import matplotlib.pyplot as plt
-from itertools import cycle
-import itertools
 import more_itertools
 
 import torchvision.transforms as T
 from PIL import Image
-import matplotlib.pyplot as plt
-
-from captum.attr import LayerGradCam
-from captum.attr import visualization
-from PIL import Image
-import shutil
 
 import numpy as np
-from dask_image.imread import imread
-from dask_image import ndfilters, ndmorph, ndmeasure
-import matplotlib.pyplot as plt
-from dask_image import ndmeasure
-
 from operator import itemgetter
 from time import perf_counter
 from PIL import ImageFilter, Image
@@ -316,7 +302,6 @@ def region_explainability(image, segment_mask: np.array, top_n_start: int, model
     powerset_list = [0]
     total_images_analyzed = 0
     searches_in_current_depth = 0
-    best_masked_image = None
     start = perf_counter()
     # print('Starting with region search depth:', top_n)
     features_list = features_1[0:top_n]
@@ -369,8 +354,8 @@ def region_explainability(image, segment_mask: np.array, top_n_start: int, model
             total_num_pixels.append(total_attribution[-1].size)
             for i in range(len(powerset_list[searches_in_current_depth])):
                 total_attribution[num] += features_list[powerset_list[searches_in_current_depth][i]]
-            total_attribution[num] = np.array(Image.fromarray(total_attribution[num].astype('uint8'),
-                                                              'L').filter(ImageFilter.MaxFilter(3)))
+            # total_attribution[num] = np.array(Image.fromarray(total_attribution[num].astype('uint8'),
+            #                                                   'L').filter(ImageFilter.MaxFilter(3)))
             num_changes.append(np.count_nonzero(total_attribution[-1]))
             obfuscated_image = blur_image_from_attribution(image=image,
                                                            attribution_map=total_attribution[num]).to(device)
