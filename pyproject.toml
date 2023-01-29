@@ -10,7 +10,7 @@ authors = [
   { name="Brandon Wherry", email="brandon.wherry@utsa.edu" },
 ]
 readme = "README.md"
-requires-python = ">=3.8, <=3.10"
+requires-python = ">=3.8, <=3.10.9"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
