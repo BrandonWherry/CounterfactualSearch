@@ -1,2 +1,2 @@
 def test (a):
-    return a
+    return a+a
