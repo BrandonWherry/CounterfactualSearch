@@ -197,6 +197,6 @@ if __name__ == "__main__":
     #          output_class=args.class_index,
     #          img_dir=args.image_dir)
 
-    
+    test()
 
     print('Completed.')
