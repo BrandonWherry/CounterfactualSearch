@@ -3,6 +3,8 @@ from ml_utils.models import gradcam_model
 import torchvision.transforms as transforms
 from PIL import Image
 from cse.cse_algorithms import *
+from pathlib import Path
+import glob
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -127,36 +129,41 @@ def main_old(attr_map: int = 0,
         return -1
 
 
-def main(attr_map: int = 0,
-         seg_map: int = 0,
-         starting_class: int = 0,
+def main(attr_map: str,
+         seg_map: str = 0,
+         class_index: int = 0,
          img_dir: str = 'data/train'):
-    """
-    Psuedo code for main func:
 
+    # Psuedo code for main func:
 
-    build model & jit model
-    get images folder
+    # build model & jit model
+    # get images folder
+    images = list()
+
+    model = None
+    jit_model = model
 
     for image in images:
         output = jit_model(image)
+        output_class_index = output
 
-        if output_class != starting_class:
-            print(f'Warning, {image} is not predicted to be class {LABELS_MAP[starting_class]}')
+        if output_class_index != class_index:
+            print(f'Warning, predicted class index is not the same inputted class index')
             print('Skipping over image.')
             continue
 
-        seg_map = get_slic_seg(image)
-        attr_map = get_fullgrad_map(model, class_index, image)
-        avg_score_attr_map = get_avg_score_attr_map(seg_map, attr_map)
-        ranked_attr = get_attribution_rank(avg_score_attr_map)
-        features = get_feature_masks(image=image, attributions=ranked_attr,
-                                   segments_slic=seg_map)
-        counterfactual_search_result = cse(image, jit_model, features, start_depth, end_depth)
+        # seg_map = get_seg_map(image, seg_type='slic')
 
-        ...
+        # attr_map = get_attr_map(model, class_index, image)
 
-    """
+        # avg_score_attr_map = get_avg_score_attr_map(seg_map, attr_map)
+
+        # ranked_attr_map = get_attr_rank(avg_score_attr_map)
+
+        # features = get_feature_masks(image=image, attributions=ranked_attr_map,
+        #                            seg_map=seg_map)
+
+        # counterfactual_search_result = cse(image, jit_model, features, start_depth, end_depth)
 
     pass
 
@@ -164,37 +171,26 @@ def main(attr_map: int = 0,
 if __name__ == "__main__":
     import argparse
     import glob
-    import os
+
     parser = argparse.ArgumentParser(description='region explainability')
     parser.add_argument('--attr_map', default='grad_cam', type=str,
-                        help=("what attribution map to use, can be 'grad_cam'," +
-                              " 'grad_cam++', 'full_grad' 'x_grad_cam' 'ablation_cam'"))
+                        help=("attribution method to use, it can be:\n 'gradcam'," +
+                              " 'gradcam++', 'fullgrad', 'x_grad_cam', or 'ablation_cam'"))
 
-    parser.add_argument('--seg_map', default='slic', type=str, help=("what segmentation" +
-                        "algorithm to use, can be 'slic', 'bass', 'felzen', or 'watershed'"))
+    parser.add_argument('--seg_map', default='slic', type=str, help=(
+                        "segmentation method to use, it can be: 'slic', 'bass', 'felzen', or 'watershed'"))
 
-    parser.add_argument('--output_class', default=7, type=int,
-                        help='Target class')
+    parser.add_argument('--class_index', default=7, type=int,
+                        help='class index of the source class')
 
-    parser.add_argument('--img_dir', default='/workspace/adv_robustness' +
-                        '/region_explainability/' + 'labelme/MNIST_71/test_images',
-                        type=str, help='dir of images to be tested')
+    parser.add_argument('--image_dir', default='./',
+                        type=str, help='directory path of images for cse algorithm')
 
     args = parser.parse_args()
 
-    img_list = glob.glob(os.path.join(args.img_dir, '*.png'))
+    main_old(attr_map=args.attr_map,
+             seg_map=args.seg_map,
+             output_class=args.class_index,
+             img_dir=args.image_dir)
 
-    successes = 0
-    total = 0
-
-    for img in img_list:
-        print('#'*100)
-        print()
-        main_old(attr_map=ATTR_MAP[args.attr_map],
-                 seg_map=SEG_MAP[args.seg_map],
-                 output_class=args.output_class,
-                 img_dir=img)
-        print()
-        print('#'*100)
-
-    print('Ratio of success')
+    print('Completed.')
