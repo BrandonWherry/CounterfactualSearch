@@ -103,15 +103,15 @@ def main_old(attr_map: int = 0,
     if attr_map == 4:
         cam = AblationCAM(model=model, target_layers=target_layers)
 
-    # segments = None
-    # if seg_map == 0:
-    #     segments = slic(img_np, n_segments=25, compactness=1, start_label=1)
+    segments = None
+    if seg_map == 0:
+        segments = slic(img_np, n_segments=25, compactness=1, start_label=1)
 
-    # if seg_map == 2:
-    #     segments = felzenszwalb(img_np, scale=5, sigma=0.5, min_size=5)
+    if seg_map == 2:
+        segments = felzenszwalb(img_np, scale=5, sigma=0.5, min_size=5)
 
-    # if seg_map == 3:
-    #     segments = watershed(img_np, markers=25, compactness=0.001)
+    if seg_map == 3:
+        segments = watershed(img_np, markers=25, compactness=0.001)
 
     grayscale_cam = cam(input_tensor=input_tensor, targets=targets)
     grayscale_cam = grayscale_cam[0, :]
