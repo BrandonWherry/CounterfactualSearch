@@ -1,7 +1,7 @@
 import numpy as np
 from numpy import ndarray
 from skimage.segmentation import slic, felzenszwalb, watershed
-
+from bass_segmentation import run_bass_batch, csv_mask_to_numpy
 
 ACCEPTED_SEG_TYPE = ['slic', 'felzen', 'watershed', 'bass']
 
@@ -11,7 +11,7 @@ def get_seg_map(seg_type: str, image: ndarray, *args, **kwargs) -> ndarray:
     Called helper function. This functions provides documentation on all other 
         useful segmentation functions.
 
-    Use the following psuedo code to understand how it is used.
+    Use the following psuedo code to understand how to use the various segmentation functions.
 
     if seg_type == 'slic':
         seg_map = slic(image, *args, **kwargs)
@@ -32,11 +32,11 @@ def get_seg_map(seg_type: str, image: ndarray, *args, **kwargs) -> ndarray:
         https://scikit-image.org/docs/stable/api/skimage.segmentation.html#skimage.segmentation.watershed
 
     elif seg_type == 'bass':
-        seg_map = bass(image, *args, **kwargs)
+        seg_map = csv_mask_to_numpy(image, *args, **kwargs)
 
-        Must have a bass build from https://github.com/BGU-CS-VIL/BASS
-        For args and kwargs for 'watershed', See documentation on:
-        bass() from this module.
+        Must have a build from https://github.com/BGU-CS-VIL/BASS
+        For args and kwargs for 'bass', See documentation from csv_mask_to_numpy in bass_segmentation module.
+        Must be used after already running bass_segmentation.run_bass_batch().
 
     return seg_map
 
@@ -70,13 +70,9 @@ def get_seg_map(seg_type: str, image: ndarray, *args, **kwargs) -> ndarray:
         seg_map = watershed(image, *args, **kwargs)
 
     elif seg_type == 'bass':
-        seg_map = bass(image, *args, **kwargs)
+        seg_map = csv_mask_to_numpy(image, *args, **kwargs)
 
     assertion_str = f'Type {type(seg_map)} is not a numpy array'
     assert isinstance(seg_map, ndarray), assertion_str
 
     return seg_map
-
-
-def bass():
-    pass

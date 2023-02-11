@@ -11,7 +11,7 @@ import shutil
 
 def run_bass_batch(image_dir_path: str, 
              output_dir_path: str,
-             bass_path: Optional[str] = '/workspace/adv_robustness/region_explainability/BASS',
+             bass_build_path: Optional[str] = '/workspace/adv_robustness/region_explainability/BASS/build',
              n: Optional[int] = 15,
              im_size: Optional[int] = 0,  # 0 im_size means that no resize will happen
              i_std: Optional[float] = 0.018,
@@ -35,7 +35,7 @@ def run_bass_batch(image_dir_path: str,
     Returns:
         None
     """
-    results_dir = os.path.join(bass_path, 'result/')
+    results_dir = os.path.join(bass_build_path, 'result/')
     results_dir_list = [file_name for file_name in os.listdir(results_dir) if not file_name.startswith('.')]
     
     # removing previous output from results, if exists
@@ -44,7 +44,7 @@ def run_bass_batch(image_dir_path: str,
             os.remove(os.path.join(results_dir, file))
     
     # running BASS program
-    bass_build_path = os.path.join(bass_path, 'build')
+    # bass_build_path = os.path.join(bass_path, 'build')
     args = ['./Sp_demo_for_direc', '-d', image_dir_path,
             '-n', str(n),
             '--im_size', str(im_size), 
@@ -52,7 +52,7 @@ def run_bass_batch(image_dir_path: str,
             '--alpha', str(alpha),
             '--beta', str(beta)]
     print('Running the following subprocess command:\n', *args)
-    subprocess.run(args, cwd=bass_build_path, capture_output=not(show_bass_output))
+    subprocess.run(args, cwd=bass_build_path, capture_output=not(show_bass_output), shell=True)
             
     # grabbing all output from results dir, and sending it to output_dir_path
     results_dir_list = [file_name for file_name in os.listdir(results_dir) if not file_name.startswith('.')]
