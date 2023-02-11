@@ -14,7 +14,7 @@ To run bass segmentation on a directory of images, follow these steps:
 import os
 import subprocess
 import numpy as np
-from typing import List, Optional, Union
+from typing import Optional
 import shutil
 
 
