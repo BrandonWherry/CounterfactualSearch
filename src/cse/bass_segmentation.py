@@ -28,7 +28,7 @@ def run_bass_batch(image_dir_path: str,
              beta: Optional[float] = 0.5,
              show_bass_output: Optional[bool] = False
             ) -> None:
-    """Runs the BASS algorithm on a batch of images, and moves the output to the user-specificed output_dir_path.
+    """Runs the BASS algorithm on a batch of images, and moves the output to the user-specified output_dir_path.
     
     Args:
         image_dir_path (str): Where the to-be-segmented images are located
